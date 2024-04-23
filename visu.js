@@ -15,102 +15,35 @@ function whenDocumentLoaded(action) {
 	}
 }
 
-// NOTE: Dummy data for now
-const fakeLobbyDataHierarchy = {
-	name: "Lobby",
-	children: [
-		{
-			name: "Economie",
-			children: [
-				{
-					name: "Alimentation",
-					children: [
-						{
-							name: "UDC",
-							children: [
-								{ name: "Polit 1", partei: "UDC", value: 1 },
-								{ name: "Polit 5", partei: "UDC", value: 1 },
-								{ name: "Polit 9", partei: "UDC", value: 1 },
-								{ name: "Polit 13", partei: "UDC", value: 1 },
-								{ name: "Polit 17", partei: "UDC", value: 1 },
-							],
-						},
-						{
-							name: "PLR",
-							children: [
-								{ name: "Polit 4", partei: "PLR", value: 1 },
-								{ name: "Polit 8", partei: "PLR", value: 1 },
-								{ name: "Polit 12", partei: "PLR", value: 1 },
-								{ name: "Polit 16", partei: "PLR", value: 1 },
-								{ name: "Polit 20", partei: "PLR", value: 1 },
-							],
-						},
-					],
-				},
-				{
-					name: "Tabac",
-					children: [
-						{
-							name: "UDC",
-							children: [
-								{ name: "Polit 2", partei: "UDC", value: 1 },
-								{ name: "Polit 6", partei: "UDC", value: 1 },
-								{ name: "Polit 10", partei: "UDC", value: 1 },
-								{ name: "Polit 14", partei: "UDC", value: 1 },
-								{ name: "Polit 18", partei: "UDC", value: 1 },
-							],
-						},
-						{
-							name: "PLR",
-							children: [
-								{ name: "Polit 3", partei: "PLR", value: 1 },
-								{ name: "Polit 7", partei: "PLR", value: 1 },
-								{ name: "Polit 11", partei: "PLR", value: 1 },
-								{ name: "Polit 15", partei: "PLR", value: 1 },
-								{ name: "Polit 19", partei: "PLR", value: 1 },
-							],
-						},
-					],
-				},
-			],
-		},
-		{
-			name: "Santé",
-			children: [
-				{
-					name: "Caisse Maladie",
-					children: [
-						{
-							name: "Le Centre",
-							children: [
-								{ name: "Jean", partei: "Le Centre", value: 1 },
-								{ name: "Paul", partei: "Le Centre", value: 1 },
-								{ name: "Jacques", partei: "Le Centre", value: 1 },
-							],
-						},
-					],
-				},
-			],
-		},
-	],
-};
-
-function getColor(partei) {
-	switch (partei) {
-		case "PS":
-			return "#e83452";
-		case "Verts":
-			return "#b5cc02";
-		case "Vert'libéraux":
-			return "#6ab42d";
-		case "Le Centre":
+function getColor(party) {
+	// TODO: Update colors
+	switch (party) {
+		case "Die Mitte": // "Le Centre":
 			return "#f18400";
-		case "PBD":
-			return "#fecc00";
-		case "PLR":
-			return "#4783c4";
-		case "UDC":
+		case "Eidgenössisch-Demokratische Union":
+			return "brown";
+		case "Freisinnig-Demokratische Partei":
+			return "blue";
+		case "Grüne Partei der Schweiz": // "Les Verts":
+			return "#b5cc02";
+		case "Grünliberale Partei": // "Vert'libéraux":
+			return "#6ab42d";
+		case "Schweizerische Volkspartei": //"UDC":
 			return "#00823d";
+		case "Sozialdemokratische Partei": // "PS":
+			return "#e83452";
+		case "Alternative - die Grünen Zug":
+			return "lightgreen";
+		case "Evangelische Volkspartei":
+			return "lightblue";
+		case "Lega dei Ticinesi":
+			return "darkblue";
+		case "Liberal-Demokratische Partei":
+			return "#4783c4";
+		case "Basels starke Alternative":
+			return "yellow";
+		case "Mouvement Citoyens Romands":
+			return "purple";
 		default:
 			return "#ffffff";
 	}
@@ -129,8 +62,8 @@ class LobbyVisu {
 		const root = d3.pack().size([width, height]).padding(3)(
 			d3
 				.hierarchy(this.data)
-				.sum((d) => d.value)
-				.sort((a, b) => b.value - a.value),
+				.sum((d) => d.wirksamkeit)
+				.sort((a, b) => b.wirksamkeit - a.wirksamkeit),
 		);
 
 		// Colors
@@ -143,7 +76,7 @@ class LobbyVisu {
 			.selectAll("circle")
 			.data(root.descendants().slice(0))
 			.join("circle")
-			.attr("fill", (d) => getColor(d.data.partei))
+			.attr("fill", (d) => getColor(d.data.party))
 			.attr("stroke", (d) => (d.children ? baseStrokeColor : null))
 			.attr("pointer-events", (d) => (!d.children ? "none" : null))
 			.on("mouseover", function () {
@@ -223,9 +156,15 @@ class LobbyVisu {
 }
 
 whenDocumentLoaded(() => {
-	const data = fakeLobbyDataHierarchy;
+	const dataPath = "/data/lobby.json";
+	console.log("Loading data from:", dataPath);
+	d3.json(dataPath)
+		.then((data) => {
+			console.log("Data loaded:", data);
 
-	console.log("Data:", data);
-
-	const circles = new LobbyVisu("circles", data);
+			const circles = new LobbyVisu("circles", data);
+		})
+		.catch((error) => {
+			console.error("Error loading data:", error);
+		});
 });
