@@ -72,6 +72,10 @@ nav a:hover {
   color: var(--accent-color);
 }
 
+#repo_link {
+  float: right;
+}
+
 /* Hide Checkbox */
 #toggle {
   display: none;
