@@ -54,6 +54,8 @@ class LobbyVisu {
 		this.data = data;
 		const svg = d3.select(`#${svg_element_id}`);
 		this.svg = svg;
+		const hierarchyText = d3.select("#hierarchy");
+		this.hierarchyText = hierarchyText;
 
 		const width = this.svg.attr("width");
 		const height = this.svg.attr("height");
@@ -67,27 +69,38 @@ class LobbyVisu {
 		);
 
 		// Colors
-		const baseStrokeColor = "grey";
-		const selectedStrokeColor = "black";
+		const baseStrokeColor = "lightblue";
+		const selectedStrokeColor = "blue";
+		const baseFillColor = "white";
+		const selectedFillColor = "lightblue";
+		const getStrokeColor = (d) => {
+			if (!d.children || !d.children[0].children) return null;
+			return baseStrokeColor;
+		};
 
 		// Append the nodes.
 		const node = this.svg
 			.append("g")
 			.selectAll("circle")
-			.data(root.descendants().slice(0))
+			.data(root.descendants().slice(1))
 			.join("circle")
 			.attr("fill", (d) => getColor(d.data.party))
-			.attr("stroke", (d) => (d.children ? baseStrokeColor : null))
+			.attr("stroke", getStrokeColor)
 			.attr("pointer-events", (d) => (!d.children ? "none" : null))
 			.on("mouseover", function () {
-				d3.select(this).attr("stroke", selectedStrokeColor);
+				d3.select(this)
+					.attr("stroke", selectedStrokeColor)
+					.attr("fill", selectedFillColor);
 			})
 			.on("mouseout", function () {
-				d3.select(this).attr("stroke", baseStrokeColor);
+				d3.select(this)
+					.attr("stroke", getStrokeColor)
+					.attr("fill", baseFillColor);
 			})
 			.on("click", (event, d) => {
 				if (focus !== d) {
 					zoom(event, d);
+					updateHierarchy(d);
 					event.stopPropagation();
 				}
 			});
@@ -152,6 +165,18 @@ class LobbyVisu {
 					if (d.parent !== focus) this.style.display = "none";
 				});
 		}
+
+		function updateHierarchy(node) {
+			const ancestors = node.ancestors().reverse().slice(1);
+			const text = ancestors
+				.map((d) => {
+					const color = getColor(d.data.name, "black");
+					return `<span style='color:${color}'>${d.data.name}</span>`;
+				})
+				.join(" > ");
+
+			hierarchyText.style("visibility", "visible").html(text);
+		}
 	}
 }
 
@@ -162,7 +187,7 @@ whenDocumentLoaded(() => {
 		.then((data) => {
 			console.log("Data loaded:", data);
 
-			const circles = new LobbyVisu("circles", data);
+			new LobbyVisu("circles", data);
 		})
 		.catch((error) => {
 			console.error("Error loading data:", error);
