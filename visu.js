@@ -69,10 +69,11 @@ class LobbyVisu {
 		);
 
 		// Colors
-		const baseStrokeColor = "lightblue";
-		const selectedStrokeColor = "blue";
-		const baseFillColor = "white";
-		const selectedFillColor = "lightblue";
+		const style = getComputedStyle(document.body);
+		const baseStrokeColor = "#ced8ea";
+		const selectedStrokeColor = style.getPropertyValue("--primary-color");
+		const baseFillColor = style.getPropertyValue("--background-color");
+		const selectedFillColor = baseStrokeColor;
 		const getStrokeColor = (d) => {
 			if (!d.children || !d.children[0].children) return null;
 			return baseStrokeColor;
@@ -84,8 +85,9 @@ class LobbyVisu {
 			.selectAll("circle")
 			.data(root.descendants().slice(1))
 			.join("circle")
-			.attr("fill", (d) => getColor(d.data.party))
+			.attr("fill", (d) => getColor(d.data.party, baseFillColor))
 			.attr("stroke", getStrokeColor)
+			.attr("cursor", (d) => (!d.children ? "default" : "pointer"))
 			.attr("pointer-events", (d) => (!d.children ? "none" : null))
 			.on("mouseover", function () {
 				d3.select(this)
