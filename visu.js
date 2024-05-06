@@ -15,7 +15,7 @@ function whenDocumentLoaded(action) {
 	}
 }
 
-function getColor(party) {
+function getColor(party, defaultColor = "white") {
 	// TODO: Update colors
 	switch (party) {
 		case "Die Mitte": // "Le Centre":
@@ -45,7 +45,7 @@ function getColor(party) {
 		case "Mouvement Citoyens Romands":
 			return "purple";
 		default:
-			return "#ffffff";
+			return defaultColor;
 	}
 }
 
