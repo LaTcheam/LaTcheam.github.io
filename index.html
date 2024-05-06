@@ -14,16 +14,20 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <svg id="circles" viewBox="-464 -464 928 928" width="928" height="928">
-      <style>
-        max-width: 100%;
-        height: auto;
-        display: block;
-        margin: 0 -14px;
-        background: white;
-        cursor: pointer;
-      </style>
-    </svg>
+    <div class="visu">
+      <h3 id="title">Lobby</h3>
+      <p id="hierarchy" style="visibility: hidden">Text</p>
+      <svg id="circles" viewBox="-464 -464 928 928" width="928" height="928">
+        <style>
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 -14px;
+          background: white;
+          cursor: pointer;
+        </style>
+      </svg>
+    </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="visu.js"></script>
