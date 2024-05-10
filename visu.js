@@ -78,6 +78,7 @@ class LobbyVisu {
 			if (!d.children || !d.children[0].children) return null;
 			return baseStrokeColor;
 		};
+		const textColor = style.getPropertyValue("--text-color");
 
 		// Append the nodes.
 		const node = this.svg
@@ -172,7 +173,7 @@ class LobbyVisu {
 			const ancestors = node.ancestors().reverse().slice(1);
 			const text = ancestors
 				.map((d) => {
-					const color = getColor(d.data.name, "black");
+					const color = getColor(d.data.name, textColor);
 					return `<span style='color:${color}'>${d.data.name}</span>`;
 				})
 				.join(" > ");
