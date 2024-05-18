@@ -56,6 +56,8 @@ class LobbyVisu {
 		this.svg = svg;
 		const hierarchyText = d3.select("#hierarchy");
 		this.hierarchyText = hierarchyText;
+		const bars_svg = d3.select("#bars");
+		this.bars_svg = bars_svg;
 
 		const width = this.svg.attr("width");
 		const height = this.svg.attr("height");
@@ -104,6 +106,7 @@ class LobbyVisu {
 				if (focus !== d) {
 					zoom(event, d);
 					updateHierarchy(d);
+					updateBars(d);
 					event.stopPropagation();
 				}
 			});
@@ -111,7 +114,7 @@ class LobbyVisu {
 		// Append the text labels.
 		const label = this.svg
 			.append("g")
-			.style("font", "10px sans-serif")
+			.style("font-size", "12px")
 			.attr("pointer-events", "none")
 			.attr("text-anchor", "middle")
 			.selectAll("text")
@@ -146,6 +149,7 @@ class LobbyVisu {
 
 		function zoom(event, d) {
 			focus = d;
+			console.log("Clicked on:", d);
 
 			const transition = svg
 				.transition()
@@ -179,6 +183,82 @@ class LobbyVisu {
 				.join(" > ");
 
 			hierarchyText.style("visibility", "visible").html(text);
+		}
+
+		function updateBars(node) {
+			// check that the node's parent is the root
+			if (node.parent !== root) return;
+			function aggregatePartyValues(node) {
+				const partyValues = {};
+
+				// Recursive function to sum values
+				function recurse(node) {
+					if (node.children) {
+						for (const child of node.children) {
+							recurse(child);
+						}
+					} else {
+						const key = node.data.party;
+						if (partyValues[key]) {
+							partyValues[key] += node.value;
+						} else {
+							partyValues[key] = node.value;
+						}
+					}
+				}
+
+				recurse(node);
+				return partyValues;
+			}
+
+			// Aggregate values for the clicked node
+			const aggregatedValues = aggregatePartyValues(node);
+			console.log("Aggregated values:", aggregatedValues);
+			const agg_data = Object.keys(aggregatedValues)
+				.map((key) => ({
+					name: key,
+					value: aggregatedValues[key] / 2,
+				}))
+				.sort((a, b) => b.value - a.value);
+
+			const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+			const width_bars = bars_svg.attr("width") - margin.left - margin.right;
+			const height_bars =
+				d3.max(agg_data, (d) => d.value) - margin.top - margin.bottom;
+			const g = bars_svg.append("g");
+
+			// Scales
+			const x = d3.scaleBand().rangeRound([0, width_bars]).padding(0.1);
+			const y = d3.scaleLinear().rangeRound([height_bars, 0]);
+
+			// Axes
+			const xAxis = g
+				.append("g")
+				.attr("class", "axis axis--x")
+				.attr("transform", `translate(0,${height_bars})`);
+
+			const yAxis = g.append("g").attr("class", "axis axis--y");
+
+			x.domain(agg_data.map((d) => d.name));
+			y.domain([0, d3.max(agg_data, (d) => d.value)]);
+
+			const bars = g.selectAll(".bar").data(agg_data);
+
+			bars
+				.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.merge(bars)
+				.attr("x", (d) => x(d.name))
+				.attr("y", (d) => y(d.value))
+				.attr("width", x.bandwidth())
+				.attr("height", (d) => height_bars - y(d.value))
+				.attr("fill", (d) => getColor(d.name, baseFillColor));
+
+			bars.exit().remove();
+
+			xAxis.call(d3.axisBottom(x));
+			yAxis.call(d3.axisLeft(y));
 		}
 	}
 }
