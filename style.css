@@ -153,3 +153,9 @@ svg {
   margin: 0 -14px;
   background: var(--background-color);
 }
+
+tooltip {
+  background-color: black;
+  border: none;
+  color: white;
+}
