@@ -271,6 +271,10 @@ class LobbyVisu {
 			const width_bars = bars_svg.attr("width") - margin.left - margin.right;
 			const height_bars =
 				d3.max(agg_data, (d) => d.value) - margin.top - margin.bottom;
+
+			// Flush the content of previous bars
+			bars_svg.selectAll("*").remove();
+
 			const g = bars_svg.append("g");
 
 			// Scales
