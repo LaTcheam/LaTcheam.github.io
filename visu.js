@@ -246,9 +246,9 @@ class LobbyVisu {
 					} else {
 						const key = node.data.party;
 						if (partyValues[key]) {
-							partyValues[key] += node.value;
+							partyValues[key]++;
 						} else {
-							partyValues[key] = node.value;
+							partyValues[key] = 1;
 						}
 					}
 				}
