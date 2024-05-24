@@ -78,21 +78,21 @@ class LobbyVisu {
 			.attr("class", "tooltip");
 
 		// Three function that change the tooltip when user hover / move / leave a cell
-		const mouseover = function (event, d) {
+		const mouseover = (event, d) => {
 			tooltip.transition().duration(200).style("opacity", 1);
 			tooltip
 				.html(
 					`<strong>${d.data.lobby_name}</strong><br/>Années rémunérées; ${d.data.detail_geld}`,
 				)
-				.style("left", event.pageX + 15 + "px")
-				.style("top", event.pageY - 28 + "px");
+				.style("left", `${event.pageX + 15}px`)
+				.style("top", `${event.pageY - 28}px`);
 		};
-		const mousemove = function (event, d) {
+		const mousemove = (event, d) => {
 			tooltip
-				.style("left", event.pageX + 15 + "px")
-				.style("top", event.pageY - 28 + "px");
+				.style("left", `${event.pageX + 15}px`)
+				.style("top", `${event.pageY - 28}px`);
 		};
-		const mouseleave = function (event, d) {
+		const mouseleave = (event, d) => {
 			tooltip.transition().duration(200).style("opacity", 0);
 		};
 
