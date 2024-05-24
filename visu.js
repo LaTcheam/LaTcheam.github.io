@@ -231,46 +231,67 @@ class LobbyVisu {
 			hierarchyText.style("visibility", "visible").html(text);
 		}
 
+		// Bars
+
+		/**
+		 * Does a depth-first search of the tree and count the number of unique person in a party
+		 *
+		 * @param {Object} node - a node in the tree from which to start the search
+		 *
+		 */
+		function aggregatePartyValues(node) {
+			const partyValues = {};
+
+			// Recursive function to sum values
+			function recurse(node) {
+				if (node.children) {
+					for (const child of node.children) {
+						recurse(child);
+					}
+				} else {
+					const key = node.data.party;
+					if (partyValues[key]) {
+						partyValues[key].add(node.data.name);
+					} else {
+						partyValues[key] = new Set([node.data.name]);
+					}
+				}
+			}
+
+			recurse(node);
+
+			// Convert sets to numbers
+			const result = {};
+			for (const key in partyValues) {
+				result[key] = partyValues[key].size;
+			}
+			return result;
+		}
+
+		// get the total number of person per party
+		const total_party = aggregatePartyValues(root);
+		console.log("Total party:", total_party);
+
 		function updateBars(node) {
 			// check that the node's parent is the root
 			if (node.parent !== root) return;
-			function aggregatePartyValues(node) {
-				const partyValues = {};
-
-				// Recursive function to sum values
-				function recurse(node) {
-					if (node.children) {
-						for (const child of node.children) {
-							recurse(child);
-						}
-					} else {
-						const key = node.data.party;
-						if (partyValues[key]) {
-							partyValues[key]++;
-						} else {
-							partyValues[key] = 1;
-						}
-					}
-				}
-
-				recurse(node);
-				return partyValues;
-			}
 
 			// Aggregate values for the clicked node
 			const aggregatedValues = aggregatePartyValues(node);
 			console.log("Aggregated values:", aggregatedValues);
-			const agg_data = Object.keys(aggregatedValues)
+			const agg_data = Object.keys(total_party)
 				.map((key) => ({
 					name: key,
-					value: aggregatedValues[key] / 2,
+					value: (aggregatedValues[key] || 0) * 10,
+					total: total_party[key] * 10,
 				}))
-				.sort((a, b) => b.value - a.value);
+				.sort((a, b) => b.total - a.total);
+			console.log("Aggregated data:", agg_data);
 
 			const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 			const width_bars = bars_svg.attr("width") - margin.left - margin.right;
 			const height_bars =
-				d3.max(agg_data, (d) => d.value) - margin.top - margin.bottom;
+				d3.max(agg_data, (d) => d.total) - margin.top - margin.bottom;
 
 			// Flush the content of previous bars
 			bars_svg.selectAll("*").remove();
@@ -290,10 +311,27 @@ class LobbyVisu {
 			const yAxis = g.append("g").attr("class", "axis axis--y");
 
 			x.domain(agg_data.map((d) => d.name));
-			y.domain([0, d3.max(agg_data, (d) => d.value)]);
+			y.domain([0, d3.max(agg_data, (d) => d.total)]);
 
 			const bars = g.selectAll(".bar").data(agg_data);
 
+			// Add the bars for the total
+			bars
+				.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.merge(bars)
+				.attr("x", (d) => x(d.name))
+				.attr("y", (d) => y(d.total))
+				.attr("width", x.bandwidth())
+				.attr("height", (d) => height_bars - y(d.total))
+				.attr("fill", (d) => {
+					// const color = getColor(d.name, baseFillColor);
+					// return d.value === 0 ? color : d3.color(color).brighter(0.9);
+					return "lightgrey";
+				});
+
+			// Add the bars for the count
 			bars
 				.enter()
 				.append("rect")
