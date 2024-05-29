@@ -1,55 +1,6 @@
-/* Data Visualisation Project
- *
- * Sources:
- *	- Data: https://lobbywatch.ch
- *	- D3 Inspiration: https://observablehq.com/@d3/zoomable-circle-packing
- *
- */
+import { getColor } from "./utils.js";
 
-function whenDocumentLoaded(action) {
-	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", action);
-	} else {
-		// `DOMContentLoaded` already fired
-		action();
-	}
-}
-
-function getColor(party, defaultColor = "white") {
-	// TODO: Update colors
-	switch (party) {
-		case "Die Mitte": // "Le Centre":
-			return "#f18400";
-		case "Eidgenössisch-Demokratische Union":
-			return "brown";
-		case "Freisinnig-Demokratische Partei":
-			return "blue";
-		case "Grüne Partei der Schweiz": // "Les Verts":
-			return "#b5cc02";
-		case "Grünliberale Partei": // "Vert'libéraux":
-			return "#6ab42d";
-		case "Schweizerische Volkspartei": //"UDC":
-			return "#00823d";
-		case "Sozialdemokratische Partei": // "PS":
-			return "#e83452";
-		case "Alternative - die Grünen Zug":
-			return "lightgreen";
-		case "Evangelische Volkspartei":
-			return "lightblue";
-		case "Lega dei Ticinesi":
-			return "darkblue";
-		case "Liberal-Demokratische Partei":
-			return "#4783c4";
-		case "Basels starke Alternative":
-			return "yellow";
-		case "Mouvement Citoyens Romands":
-			return "purple";
-		default:
-			return defaultColor;
-	}
-}
-
-class LobbyVisu {
+export class LobbyVisu {
 	constructor(svg_element_id, data) {
 		this.data = data;
 		const svg = d3.select(`#${svg_element_id}`);
@@ -351,16 +302,3 @@ class LobbyVisu {
 		}
 	}
 }
-
-whenDocumentLoaded(() => {
-	const dataPath = "/data/lobby.json";
-	console.log("Loading data from:", dataPath);
-	d3.json(dataPath)
-		.then((data) => {
-			console.log("Data loaded:", data);
-			new LobbyVisu("circles", data);
-		})
-		.catch((error) => {
-			console.error("Error loading data:", error);
-		});
-});
