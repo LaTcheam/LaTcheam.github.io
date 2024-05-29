@@ -107,6 +107,7 @@ export class LobbyVisu {
 		this.svg.on("click", (event) => {
 			zoom(event, root);
 			party_bars.updateBars(root);
+			hierarchyText.style("visibility", "hidden");
 		});
 		let focus = root;
 		let view;
