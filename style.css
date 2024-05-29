@@ -154,8 +154,12 @@ svg {
   background: var(--background-color);
 }
 
-tooltip {
-  background-color: black;
-  border: none;
-  color: white;
+.tooltip {
+  position: absolute;
+  background-color: var(--background-color);
+  border: solid 1px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  pointer-events: none; /* Tooltip should not interfere with mouse events */
 }
