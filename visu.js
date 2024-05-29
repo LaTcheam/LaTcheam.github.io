@@ -274,7 +274,8 @@ class LobbyVisu {
 
 		function updateBars(node) {
 			// check that the node's parent is the root
-			if (node.parent !== root) return;
+			if (node.data.type !== "branche" && node.data.type !== "subbranche")
+				return;
 
 			// Aggregate values for the clicked node
 			const aggregatedValues = aggregatePartyValues(node);
