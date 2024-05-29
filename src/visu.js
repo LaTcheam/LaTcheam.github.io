@@ -1,6 +1,6 @@
-import { getColor } from "./utils.js";
-import { CustomTooltip } from "./tooltip.js";
 import { PartyBars } from "./party_bars.js";
+import { CustomTooltip } from "./tooltip.js";
+import { getColor } from "./utils.js";
 
 export class LobbyVisu {
 	constructor(svg_element_id, data) {
