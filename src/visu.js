@@ -1,5 +1,6 @@
 import { getColor } from "./utils.js";
 import { CustomTooltip } from "./tooltip.js";
+import { PartyBars } from "./party_bars.js";
 
 export class LobbyVisu {
 	constructor(svg_element_id, data) {
@@ -8,8 +9,6 @@ export class LobbyVisu {
 		this.svg = svg;
 		const hierarchyText = d3.select("#hierarchy");
 		this.hierarchyText = hierarchyText;
-		const bars_svg = d3.select("#bars");
-		this.bars_svg = bars_svg;
 
 		const width = this.svg.attr("width");
 		const height = this.svg.attr("height");
@@ -24,6 +23,9 @@ export class LobbyVisu {
 
 		// Tooltip
 		const tooltip = new CustomTooltip();
+
+		// Bars
+		const party_bars = new PartyBars("bars", root);
 
 		// Colors
 		const style = getComputedStyle(document.body);
@@ -78,7 +80,7 @@ export class LobbyVisu {
 					if (focus !== d) {
 						zoom(event, d);
 						updateHierarchy(d);
-						updateBars(d);
+						party_bars.updateBars(d);
 						event.stopPropagation();
 					}
 				}
@@ -156,125 +158,6 @@ export class LobbyVisu {
 				.join(" > ");
 
 			hierarchyText.style("visibility", "visible").html(text);
-		}
-
-		// Bars
-
-		/**
-		 * Does a depth-first search of the tree and count the number of unique person in a party
-		 *
-		 * @param {Object} node - a node in the tree from which to start the search
-		 *
-		 */
-		function aggregatePartyValues(node) {
-			const partyValues = {};
-
-			// Recursive function to sum values
-			function recurse(node) {
-				if (node.children) {
-					for (const child of node.children) {
-						recurse(child);
-					}
-				} else {
-					const key = node.data.party;
-					if (partyValues[key]) {
-						partyValues[key].add(node.data.name);
-					} else {
-						partyValues[key] = new Set([node.data.name]);
-					}
-				}
-			}
-
-			recurse(node);
-
-			// Convert sets to numbers
-			const result = {};
-			for (const key in partyValues) {
-				result[key] = partyValues[key].size;
-			}
-			return result;
-		}
-
-		// get the total number of person per party
-		const total_party = aggregatePartyValues(root);
-		console.log("Total party:", total_party);
-
-		function updateBars(node) {
-			// check that the node's parent is the root
-			if (node.data.type !== "branche" && node.data.type !== "subbranche")
-				return;
-
-			// Aggregate values for the clicked node
-			const aggregatedValues = aggregatePartyValues(node);
-			console.log("Aggregated values:", aggregatedValues);
-			const agg_data = Object.keys(total_party)
-				.map((key) => ({
-					name: key,
-					value: (aggregatedValues[key] || 0) * 10,
-					total: total_party[key] * 10,
-				}))
-				.sort((a, b) => b.total - a.total);
-			console.log("Aggregated data:", agg_data);
-
-			const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-			const width_bars = bars_svg.attr("width") - margin.left - margin.right;
-			const height_bars =
-				d3.max(agg_data, (d) => d.total) - margin.top - margin.bottom;
-
-			// Flush the content of previous bars
-			bars_svg.selectAll("*").remove();
-
-			const g = bars_svg.append("g");
-
-			// Scales
-			const x = d3.scaleBand().rangeRound([0, width_bars]).padding(0.1);
-			const y = d3.scaleLinear().rangeRound([height_bars, 0]);
-
-			// Axes
-			const xAxis = g
-				.append("g")
-				.attr("class", "axis axis--x")
-				.attr("transform", `translate(0,${height_bars})`);
-
-			const yAxis = g.append("g").attr("class", "axis axis--y");
-
-			x.domain(agg_data.map((d) => d.name));
-			y.domain([0, d3.max(agg_data, (d) => d.total)]);
-
-			const bars = g.selectAll(".bar").data(agg_data);
-
-			// Add the bars for the total
-			bars
-				.enter()
-				.append("rect")
-				.attr("class", "bar")
-				.merge(bars)
-				.attr("x", (d) => x(d.name))
-				.attr("y", (d) => y(d.total))
-				.attr("width", x.bandwidth())
-				.attr("height", (d) => height_bars - y(d.total))
-				.attr("fill", (d) => {
-					// const color = getColor(d.name, baseFillColor);
-					// return d.value === 0 ? color : d3.color(color).brighter(0.9);
-					return "lightgrey";
-				});
-
-			// Add the bars for the count
-			bars
-				.enter()
-				.append("rect")
-				.attr("class", "bar")
-				.merge(bars)
-				.attr("x", (d) => x(d.name))
-				.attr("y", (d) => y(d.value))
-				.attr("width", x.bandwidth())
-				.attr("height", (d) => height_bars - y(d.value))
-				.attr("fill", (d) => getColor(d.name, baseFillColor));
-
-			bars.exit().remove();
-
-			xAxis.call(d3.axisBottom(x));
-			yAxis.call(d3.axisLeft(y));
 		}
 	}
 }
