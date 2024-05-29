@@ -1,4 +1,5 @@
 import { getColor } from "./utils.js";
+import { CustomTooltip } from "./tooltip.js";
 
 export class LobbyVisu {
 	constructor(svg_element_id, data) {
@@ -22,30 +23,7 @@ export class LobbyVisu {
 		);
 
 		// Tooltip
-		const tooltip = d3
-			.select("body")
-			.append("div")
-			.style("opacity", 0)
-			.attr("class", "tooltip");
-
-		// Three function that change the tooltip when user hover / move / leave a cell
-		const mouseover = (event, d) => {
-			tooltip.transition().duration(200).style("opacity", 1);
-			tooltip
-				.html(
-					`<strong>${d.data.lobby_name}</strong><br/>Années rémunérées; ${d.data.detail_geld}`,
-				)
-				.style("left", `${event.pageX + 15}px`)
-				.style("top", `${event.pageY - 28}px`);
-		};
-		const mousemove = (event, d) => {
-			tooltip
-				.style("left", `${event.pageX + 15}px`)
-				.style("top", `${event.pageY - 28}px`);
-		};
-		const mouseleave = (event, d) => {
-			tooltip.transition().duration(200).style("opacity", 0);
-		};
+		const tooltip = new CustomTooltip();
 
 		// Colors
 		const style = getComputedStyle(document.body);
@@ -76,22 +54,22 @@ export class LobbyVisu {
 						.attr("stroke", selectedStrokeColor)
 						.attr("fill", selectedFillColor);
 				} else {
-					mouseover(event, d);
+					tooltip.onMouseOver(event, d);
 				}
 			})
 			.on("mousemove", (event, d) => {
 				if (d.children == null) {
-					mousemove(event, d);
+					tooltip.onMouseMove(event);
 				}
 			})
-			.on("mouseout", function (event, d) {
+			.on("mouseout", function (_event, d) {
 				if (d.children) {
 					// usual behaviour if children
 					d3.select(this)
 						.attr("stroke", getStrokeColor)
 						.attr("fill", baseFillColor);
 				} else {
-					mouseleave(event, d);
+					tooltip.onMouseLeave();
 				}
 			})
 			.on("click", (event, d) => {
@@ -103,8 +81,6 @@ export class LobbyVisu {
 						updateBars(d);
 						event.stopPropagation();
 					}
-				} else {
-					alert("leaf node clicked");
 				}
 			});
 
