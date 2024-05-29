@@ -6,6 +6,9 @@ export class PartyBars {
 	constructor(svg_element_id, root) {
 		this.#total_party = this.#aggregatePartyValues(root);
 		this.bars_svg = d3.select(`#${svg_element_id}`);
+
+		// At start, show the total values
+		this.updateBars(root);
 	}
 
 	#aggregatePartyValues(node) {
@@ -38,9 +41,6 @@ export class PartyBars {
 	}
 
 	updateBars(node) {
-		// check that the node's parent is the root
-		if (node.data.type !== "branche" && node.data.type !== "subbranche") return;
-
 		// Aggregate values for the clicked node
 		const aggregatedValues = this.#aggregatePartyValues(node);
 		console.log("Aggregated values:", aggregatedValues);

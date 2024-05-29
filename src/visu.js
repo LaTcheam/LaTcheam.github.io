@@ -80,7 +80,11 @@ export class LobbyVisu {
 					if (focus !== d) {
 						zoom(event, d);
 						updateHierarchy(d);
-						party_bars.updateBars(d);
+
+						// check that the node's parent is the root
+						if (d.data.type === "branche" || d.data.type === "subbranche")
+							party_bars.updateBars(d);
+
 						event.stopPropagation();
 					}
 				}
@@ -100,7 +104,10 @@ export class LobbyVisu {
 			.text((d) => d.data.name);
 
 		// Create the zoom behavior and zoom immediately in to the initial focus node.
-		this.svg.on("click", (event) => zoom(event, root));
+		this.svg.on("click", (event) => {
+			zoom(event, root);
+			party_bars.updateBars(root);
+		});
 		let focus = root;
 		let view;
 		zoomTo([focus.x, focus.y, focus.r * 2]);
