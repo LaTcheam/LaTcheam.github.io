@@ -163,3 +163,94 @@ svg {
   font-size: 14px;
   pointer-events: none; /* Tooltip should not interfere with mouse events */
 }
+
+#party_repartition {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
+
+/* Dropdown with search: */
+/* Inspiration: https://youtu.be/R4owT-LcKOo */
+.select-box {
+  /* margin-top: 150px; */
+  width: 380px;
+  position: relative;
+}
+
+.select-options {
+  position: relative;
+}
+
+.select-options input {
+  width: 100%;
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+  cursor: pointer;
+  /* font-size: 22px; */
+  padding: 15px 20px;
+}
+
+/* Down arrow */
+.select-options:after {
+  content: "";
+  border-top: 12px solid var(--text-color);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+.content {
+  background: var(--background-color);
+  position: absolute;
+  color: var(--text-color);
+  border-radius: 5px;
+  border: 1px solid var(--secondary-color);
+  margin-top: 15px;
+  width: 100%;
+  z-index: 999;
+  padding: 20px;
+  display: none; /* Initially hidden */
+}
+
+.search input {
+  width: 100%;
+  /* font-size: 17px; */
+  padding: 15px 5px;
+  /* outline: 0; */
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+}
+
+.options {
+  margin-top: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 0px;
+}
+
+.options li {
+  padding: 10px 20px;
+  /* font-size: 20px; */
+  cursor: pointer;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+.options li:hover {
+  background: var(--secondary-color);
+  color: var(--background-color);
+  border-radius: 5px;
+}
+
+/* Handle when the select box is active */
+.select-box.active .content {
+  display: block;
+}
+
+.select-box.active .select-options:after {
+  transform: rotate(180deg);
+}
