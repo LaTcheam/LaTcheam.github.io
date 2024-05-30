@@ -1,6 +1,6 @@
 import { PartyBars } from "./party_bars.js";
 import { CustomTooltip } from "./tooltip.js";
-import { getColor } from "./utils.js";
+import { getColor, partyColors } from "./utils.js";
 
 export class LobbyVisu {
 	constructor(svg_element_id, data) {
@@ -20,6 +20,9 @@ export class LobbyVisu {
 				.sum((d) => d.wirksamkeit)
 				.sort((a, b) => b.wirksamkeit - a.wirksamkeit),
 		);
+
+		// Create the legend
+		this.#createLegend();
 
 		// Tooltip
 		const tooltip = new CustomTooltip();
@@ -166,6 +169,16 @@ export class LobbyVisu {
 				.join(" > ");
 
 			hierarchyText.style("visibility", "visible").html(text);
+		}
+	}
+
+	#createLegend() {
+		const ul = document.getElementById("legend");
+		for (const [party, color] of Object.entries(partyColors)) {
+			const li = document.createElement("li");
+			li.textContent = party;
+			li.style.setProperty("--bullet-color", color); // Set the CSS variable for each li
+			ul.appendChild(li);
 		}
 	}
 }
