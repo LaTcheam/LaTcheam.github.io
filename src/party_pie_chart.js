@@ -55,19 +55,14 @@ export class PartyPieChart {
 		const u = this.svg.selectAll("path").data(data_ready);
 
 		// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-		u.enter()
-			.append("path")
-			.merge(u)
+		u.join("path")
 			.transition()
 			.duration(1000)
 			.attr("d", d3.arc().innerRadius(0).outerRadius(this.radius))
-			.attr("fill", (d) => getColor(party))
+			.attr("fill", getColor(party))
 			.attr("stroke", "white")
 			.style("stroke-width", "2px")
 			.style("opacity", 1);
-
-		// remove the group that is not present anymore
-		u.exit().remove();
 	}
 }
 
