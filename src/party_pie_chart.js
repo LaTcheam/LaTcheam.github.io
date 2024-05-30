@@ -2,6 +2,7 @@
  * Inspired from doc: https://d3-graph-gallery.com/graph/pie_changeData.html
  */
 import { CustomDropDown } from "./dropdown.js";
+import { CustomTooltip } from "./tooltip.js";
 import { getColor } from "./utils.js";
 
 export class PartyPieChart {
@@ -9,6 +10,7 @@ export class PartyPieChart {
 		this.svg = d3.select(`#${svg_element_id}`);
 		this.radius = radius;
 		this.party_data = this.#prepareData(data);
+		this.tooltip = new CustomTooltip();
 
 		new CustomDropDown("#party-box", (selectedValue) =>
 			this.update(selectedValue, true),
@@ -63,6 +65,26 @@ export class PartyPieChart {
 			.attr("stroke", "white")
 			.style("stroke-width", "2px")
 			.style("opacity", 1);
+
+		// Get the tooltip so that we don't have problems with "self"
+		const tooltip = this.tooltip;
+		// Add mouse event to slices
+		this.svg
+			.selectAll("path")
+			.on("mouseover", function (event, d) {
+				d3.select(this).style("opacity", 0.7);
+				tooltip.onMouseOver(
+					event,
+					`<strong>${d.data[0]}</strong>: ${d.data[1]}`,
+				);
+			})
+			.on("mouseout", function (_event, _d) {
+				d3.select(this).style("opacity", 1);
+				tooltip.onMouseLeave();
+			})
+			.on("mousemove", (event) => {
+				tooltip.onMouseMove(event);
+			});
 	}
 }
 
