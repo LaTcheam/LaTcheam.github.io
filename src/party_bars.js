@@ -109,7 +109,10 @@ export class PartyBars {
 			.attr("y", (d) => y(d.value))
 			.attr("width", x.bandwidth())
 			.attr("height", (d) => height_bars - y(d.value))
-			.attr("fill", (d) => getColor(d.name, baseFillColor));
+			.attr("fill", (d) => getColor(d.name, baseFillColor))
+			.on("click", (_event, d) => {
+				this.#clickInPieDropdown(d.name);
+			});
 
 		bars.exit().remove();
 
@@ -119,5 +122,16 @@ export class PartyBars {
 			.attr("transform", "rotate(-45)")
 			.style("text-anchor", "end")
 			.style("font-size", "25px");
+	}
+
+	#clickInPieDropdown(party) {
+		const dropdown = document.querySelector("#party-box");
+		const optionsList = dropdown.querySelectorAll(".options li");
+		for (const li of optionsList) {
+			if (li.textContent.toLowerCase().includes(party.toLowerCase())) {
+				li.click();
+				break;
+			}
+		}
 	}
 }
