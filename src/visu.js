@@ -59,7 +59,7 @@ export class LobbyVisu {
 						.attr("stroke", selectedStrokeColor)
 						.attr("fill", selectedFillColor);
 				} else if (focus.data.type === "party") {
-					const html = `<strong>${d.data.lobby_name}</strong><br/>Années rémunérées; ${d.data.detail_geld}`;
+					const html = createTooltipHtml(d.data);
 					tooltip.onMouseOver(event, html);
 				}
 			})
@@ -170,6 +170,22 @@ export class LobbyVisu {
 				.join(" > ");
 
 			hierarchyText.style("visibility", "visible").html(text);
+		}
+
+		function createTooltipHtml(data) {
+			// First add the name
+			let html = `<strong>${data.name}</strong><br/>`;
+			// Add party
+			html += `<strong>Parti:</strong> ${data.party}<br/>`;
+			// Then a list of the lobbies
+			html += "<strong>Lobbies:</strong><br/>";
+			html += "<ul>";
+			for (const [i, lobby] of data.lobby_name.entries()) {
+				html += `<li>${lobby}: (${data.detail_year[i].join(", ")})</li>`;
+			}
+			html += "</ul>";
+
+			return html;
 		}
 	}
 
