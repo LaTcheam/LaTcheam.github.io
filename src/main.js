@@ -5,6 +5,7 @@
  *	- D3 Inspiration: https://observablehq.com/@d3/zoomable-circle-packing
  *
  */
+import { PartyPieChart } from "./party_pie_chart.js";
 import { LobbyVisu } from "./visu.js";
 
 function whenDocumentLoaded(action) {
@@ -23,6 +24,7 @@ whenDocumentLoaded(() => {
 		.then((data) => {
 			console.log("Data loaded:", data);
 			new LobbyVisu("circles", data);
+			new PartyPieChart("partyPie", 300, data);
 		})
 		.catch((error) => {
 			console.error("Error loading data:", error);
