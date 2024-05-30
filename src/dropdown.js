@@ -13,6 +13,8 @@ export class CustomDropDown {
 		const optionsList = options.querySelectorAll("li");
 
 		selectOptions.addEventListener("click", () => {
+			// clear text
+			optionSearch.value = "";
 			dropdown.classList.toggle("active");
 		});
 
