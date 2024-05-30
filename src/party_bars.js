@@ -110,6 +110,13 @@ export class PartyBars {
 			.attr("width", x.bandwidth())
 			.attr("height", (d) => height_bars - y(d.value))
 			.attr("fill", (d) => getColor(d.name, baseFillColor))
+			.attr("cursor", "pointer")
+			.on("mouseover", function () {
+				d3.select(this).style("opacity", 0.6);
+			})
+			.on("mouseout", function () {
+				d3.select(this).style("opacity", 1);
+			})
 			.on("click", (_event, d) => {
 				this.#clickInPieDropdown(d.name);
 			});
