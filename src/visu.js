@@ -58,7 +58,7 @@ export class LobbyVisu {
 					d3.select(this)
 						.attr("stroke", selectedStrokeColor)
 						.attr("fill", selectedFillColor);
-				} else {
+				} else if (focus.data.type === "party") {
 					tooltip.onMouseOver(event, d);
 				}
 			})
