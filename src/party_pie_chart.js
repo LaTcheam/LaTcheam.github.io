@@ -47,7 +47,7 @@ export class PartyPieChart {
 		const pie = d3
 			.pie()
 			.value((d) => d[1])
-			.sort((a, b) => d3.ascending(a[1], b[1]));
+			.sort((a, b) => d3.ascending(a[0], b[0]));
 
 		const data_ready = pie(Object.entries(data));
 

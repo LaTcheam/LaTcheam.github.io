@@ -195,6 +195,11 @@ svg {
   color: var(--background-color);
 }
 
+#party_repartition svg {
+  background: var(--primary-color);
+  margin-top: 50px;
+}
+
 /* Dropdown with search: */
 /* Inspiration: https://youtu.be/R4owT-LcKOo */
 .select-box {
