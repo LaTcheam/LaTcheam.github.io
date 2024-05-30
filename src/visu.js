@@ -59,7 +59,8 @@ export class LobbyVisu {
 						.attr("stroke", selectedStrokeColor)
 						.attr("fill", selectedFillColor);
 				} else if (focus.data.type === "party") {
-					tooltip.onMouseOver(event, d);
+					const html = `<strong>${d.data.lobby_name}</strong><br/>Années rémunérées; ${d.data.detail_geld}`;
+					tooltip.onMouseOver(event, html);
 				}
 			})
 			.on("mousemove", (event, d) => {

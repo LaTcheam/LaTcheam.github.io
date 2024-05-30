@@ -7,12 +7,10 @@ export class CustomTooltip {
 			.attr("class", "tooltip");
 	}
 
-	onMouseOver(event, d) {
+	onMouseOver(event, html) {
 		this.tooltip.transition().duration(200).style("opacity", 1);
 		this.tooltip
-			.html(
-				`<strong>${d.data.lobby_name}</strong><br/>Années rémunérées; ${d.data.detail_geld}`,
-			)
+			.html(html)
 			.style("left", `${event.pageX + 15}px`)
 			.style("top", `${event.pageY - 28}px`);
 	}
