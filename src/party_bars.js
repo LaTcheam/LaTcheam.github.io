@@ -113,7 +113,11 @@ export class PartyBars {
 
 		bars.exit().remove();
 
-		xAxis.call(d3.axisBottom(x));
-		yAxis.call(d3.axisLeft(y));
+		xAxis
+			.call(d3.axisBottom(x))
+			.selectAll("text")
+			.attr("transform", "rotate(-45)")
+			.style("text-anchor", "end")
+			.style("font-size", "25px");
 	}
 }
