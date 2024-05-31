@@ -14,7 +14,7 @@ export class PartyPieChart {
 		this.toggle = document.getElementById("branche-toggle");
 
 		let lastSelected;
-		let toggled = false;
+		let toggled = this.toggle.checked || false;
 		new CustomDropDown(
 			"#party-box",
 			Object.keys(this.party_data),
