@@ -65,12 +65,22 @@
       <div class="title">
         <h1>Political Spheres: Visual Insights into Party Lobbying</h1>
         <p>
-          <!-- Welcome to "Political Spheres: Visual Insights into Party Lobbying", -->
-          Your interactive dashboard for exploring how political parties engage
-          in various lobbies.
+          This page is the version of the visualizations for accredited persons.
         </p>
       </div>
     </header>
+
+    <section id="intro">
+      <p>
+        Each parliamentary has the right to
+        <strong>invite two people</strong>
+        who can, for a limited time, access non public parts of parliament. This
+        second visualization shows these people and the groups of interest they
+        are affiliated to. As before, we have a pie chart showing the
+        distribution of categories that each party’s invited people are related
+        to.
+      </p>
+    </section>
 
     <section id="visu_section">
       <div class="visu">
@@ -95,6 +105,13 @@
           how invested a party was on one theme but also how it compared to
           their available workforce in parlement.
         </p>
+        <p>
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+
+          This visualization is updated depending on wich circles you clicked on
+          before. Here you can also click on a bar to update the pie chart of
+          the next section.
+        </p>
         <svg
           id="bars"
           viewBox="-150 150 2150 600"
@@ -107,6 +124,11 @@
     <section id="party_repartition">
       <div class="visu">
         <h2>Party repartition</h2>
+        <p>
+          This pie chart represents the involvement of a party across different
+          categories. We can quickly see which category they are most
+          represented in.
+        </p>
         <!-- Inspiration: https://youtu.be/R4owT-LcKOo -->
         <div class="select-box" id="party-box">
           <div class="select-options">
@@ -141,7 +163,12 @@
             <span class="slider round"></span>
           </label>
         </div>
-
+        <p>
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          The name of the category and its value can be seen while hovering the
+          chart. Also you can change the party using the search bar above, and
+          switch between the category types using the toggle.
+        </p>
         <svg
           id="partyPie"
           viewBox="-300 -300 600 600"
