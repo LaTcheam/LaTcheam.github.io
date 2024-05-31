@@ -4,12 +4,17 @@
  * Inspiration: https://youtu.be/R4owT-LcKOo
  */
 export class CustomDropDown {
-	constructor(id, onEvent) {
+	constructor(id, values, onEvent) {
 		const dropdown = document.querySelector(id);
 		const selectOptions = dropdown.querySelector(".select-options");
 		const soValue = dropdown.querySelector("#soValue");
 		const optionSearch = dropdown.querySelector("#optionSearch");
 		const options = dropdown.querySelector(".options");
+		for (const value of values) {
+			const li = document.createElement("li");
+			li.textContent = value;
+			options.appendChild(li);
+		}
 		const optionsList = options.querySelectorAll("li");
 
 		selectOptions.addEventListener("click", () => {

@@ -12,8 +12,10 @@ export class PartyPieChart {
 		this.party_data = this.#prepareData(data);
 		this.tooltip = new CustomTooltip();
 
-		new CustomDropDown("#party-box", (selectedValue) =>
-			this.update(selectedValue, true),
+		new CustomDropDown(
+			"#party-box",
+			Object.keys(this.party_data),
+			(selectedValue) => this.update(selectedValue, true),
 		);
 	}
 
