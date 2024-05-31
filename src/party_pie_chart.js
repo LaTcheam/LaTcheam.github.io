@@ -72,12 +72,23 @@ export class PartyPieChart {
 		// map to data
 		const u = this.svg.selectAll("path").data(data_ready);
 
+		// color gradien:
+		const partyColor = getColor(party);
+		const values = Object.values(data);
+		const gradient = d3
+			.scaleLinear()
+			.domain([d3.min(values), d3.max(values)]) // dynamic range based on max value
+			.range([
+				d3.color(partyColor).brighter(1).toString(),
+				d3.color(partyColor).darker(1).toString(),
+			]);
+
 		// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
 		u.join("path")
 			.transition()
 			.duration(1000)
 			.attr("d", d3.arc().innerRadius(0).outerRadius(this.radius))
-			.attr("fill", getColor(party))
+			.attr("fill", (d) => gradient(d.data[1]))
 			.attr("stroke", "white")
 			.style("stroke-width", "2px")
 			.style("opacity", 1);
