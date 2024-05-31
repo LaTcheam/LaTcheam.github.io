@@ -95,16 +95,17 @@ class PartyData {
 	}
 
 	update(value) {
+		const count = value.wirksamkeit || 1;
 		if (this.branche_values[value.branche]) {
-			this.branche_values[value.branche] += value.wirksamkeit;
+			this.branche_values[value.branche] += count;
 		} else {
-			this.branche_values[value.branche] = value.wirksamkeit;
+			this.branche_values[value.branche] = count;
 		}
 
 		if (this.sub_branche_values[value.sub_branche]) {
-			this.sub_branche_values[value.sub_branche] += value.wirksamkeit;
+			this.sub_branche_values[value.sub_branche] += count;
 		} else {
-			this.sub_branche_values[value.sub_branche] = value.wirksamkeit;
+			this.sub_branche_values[value.sub_branche] = count;
 		}
 	}
 }

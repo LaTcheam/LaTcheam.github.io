@@ -17,8 +17,12 @@ export class LobbyVisu {
 		const root = d3.pack().size([width, height]).padding(3)(
 			d3
 				.hierarchy(this.data)
-				.sum((d) => d.wirksamkeit)
-				.sort((a, b) => b.wirksamkeit - a.wirksamkeit),
+				.sum((d) => d.wirksamkeit || 1)
+				.sort((a, b) => {
+					const aValue = a.wirksamkeit || 1;
+					const bValue = b.wirksamkeit || 1;
+					return bValue - aValue;
+				}),
 		);
 
 		// Create the legend
@@ -174,14 +178,19 @@ export class LobbyVisu {
 
 		function createTooltipHtml(data) {
 			// First add the name
-			let html = `<strong>${data.name}</strong><br/>`;
+			// Check if it's politician or invited
+			const name = data.name ? data.name : data.name_invited;
+			let html = `<strong>${name}</strong><br/>`;
 			// Add party
 			html += `<strong>Parti:</strong> ${data.party}<br/>`;
 			// Then a list of the lobbies
 			html += "<strong>Lobbies:</strong><br/>";
 			html += "<ul>";
 			for (const [i, lobby] of data.lobby_name.entries()) {
-				html += `<li>${lobby}: (${data.detail_year[i].join(", ")})</li>`;
+				const years = data.detail_year
+					? `: (${data.detail_year[i].join(", ")})`
+					: "";
+				html += `<li>${lobby}${years}</li>`;
 			}
 			html += "</ul>";
 

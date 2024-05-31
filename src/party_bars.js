@@ -22,10 +22,11 @@ export class PartyBars {
 				}
 			} else {
 				const key = node.data.party;
+				const value = node.data.name || node.data.name_invited;
 				if (partyValues[key]) {
-					partyValues[key].add(node.data.name);
+					partyValues[key].add(value);
 				} else {
-					partyValues[key] = new Set([node.data.name]);
+					partyValues[key] = new Set([value]);
 				}
 			}
 		}
