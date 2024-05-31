@@ -11,12 +11,26 @@ export class PartyPieChart {
 		this.radius = radius;
 		this.party_data = this.#prepareData(data);
 		this.tooltip = new CustomTooltip();
+		this.toggle = document.getElementById("branche-toggle");
 
+		let lastSelected;
+		let toggled = false;
 		new CustomDropDown(
 			"#party-box",
 			Object.keys(this.party_data),
-			(selectedValue) => this.update(selectedValue, true),
+			(selectedValue) => {
+				lastSelected = selectedValue;
+				this.update(selectedValue, !toggled);
+			},
 		);
+
+		this.toggle.addEventListener("change", (event) => {
+			toggled = event.target.checked;
+
+			if (lastSelected) {
+				this.update(lastSelected, !toggled);
+			}
+		});
 	}
 
 	#prepareData(data) {
