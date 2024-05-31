@@ -7,11 +7,11 @@ export const partyColors = {
 	"Schweizerische Volkspartei": "#00823d",
 	"Sozialdemokratische Partei": "#e83452",
 	"Alternative - die Grünen Zug": "lightgreen",
-	"Evangelische Volkspartei": "lightblue",
-	"Lega dei Ticinesi": "darkblue",
+	"Evangelische Volkspartei": "#34bfd0",
+	"Lega dei Ticinesi": "#3a00fc",
 	"Liberal-Demokratische Partei": "#4783c4",
-	"Basels starke Alternative": "yellow",
-	"Mouvement Citoyens Romands": "purple",
+	"Basels starke Alternative": "#efbd5d",
+	"Mouvement Citoyens Romands": "#c75ae8",
 };
 
 export function getColor(party, defaultColor = "white") {
